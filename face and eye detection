@@ -1,0 +1,77 @@
+"""
+Face and Eye Detection in Video using OpenCV
+
+This script detects faces and eyes in a video using Haar Cascade Classifiers.
+It reads a video file, detects faces in each frame, and then detects eyes within each detected face.
+
+This was created with respect to my internship project with Innovate Intern
+
+Author: Shashank k
+Date created: June 24, 2024
+"""
+import cv2
+from google.colab import files
+from google.colab.patches import cv2_imshow
+
+# Specify the paths to the uploaded XML files
+face_cascade_path = 'haarcascade_frontalface_default.xml'
+eye_cascade_path = 'haarcascade_eye.xml'  # Add path for eye detection
+
+# Load Haarcascade XML files
+face_cascade = cv2.CascadeClassifier(face_cascade_path)
+eye_cascade = cv2.CascadeClassifier(eye_cascade_path)  # Load eye cascade
+
+# Check if the classifiers loaded successfully
+if face_cascade.empty():
+    print("Error: Failed to load the face cascade classifier.")
+    exit()
+if eye_cascade.empty():
+    print("Error: Failed to load the eye cascade classifier.")
+    exit()
+
+# Specify the path to your video file
+video_path = '/content/3249935-uhd_3840_2160_25fps.mp4'  # Adjust path accordingly
+
+# Initialize video capture
+video_capture = cv2.VideoCapture(video_path)
+
+while True:
+    # Capture frame-by-frame
+    ret, frame = video_capture.read()
+
+    if not ret:
+        print("Error: Failed to capture image")
+        break
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # Detect faces
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+    for (x, y, w, h) in faces:
+        # Draw rectangles around detected faces (blue)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+        # Region of Interest (ROI) for eye detection within face
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_color = frame[y:y+h, x:x+w]
+
+        # Detect eyes within the face ROI
+        eyes = eye_cascade.detectMultiScale(roi_gray, scaleFactor=1.1, minNeighbors=5)
+
+         # Limit to displaying a maximum of two eyes
+        eyes = sorted(eyes, key=lambda x: x[2] * x[3], reverse=True)[:2]  # Sort by eye size and take top 2
+
+
+        for (ex, ey, ew, eh) in eyes:
+            # Draw rectangles around detected eyes (green)
+            cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
+
+    # Display the resulting frame
+    cv2_imshow(frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+video_capture.release()
+cv2.destroyAllWindows()
