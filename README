@@ -1,0 +1,23 @@
+# Enhanced_Face_and_Eye_Detection_in_Real_Time_Using_Haarcascades_in_OpenCV
+
+## Overview
+
+This project implements real-time face and eye detection using Haar Cascade classifiers in OpenCV. It captures video from a file and detects faces in each frame. For each detected face,
+it further identifies and marks the eyes within the face region.
+
+## Project Background
+
+This project was developed as part of my internship at Innovate Intern. The goal was to gain practical experience in computer vision and image processing techniques, 
+specifically focusing on facial feature detection. Face and eye detection are fundamental tasks in computer vision with applications ranging from security systems to human-computer interaction.
+
+## Features
+
+- Real-time detection of faces and eyes in video streams.
+- Display of rectangles around detected faces (blue) and eyes (green) in the video feed.
+- Integration of Haar Cascade classifiers for efficient object detection.
+
+## Requirements
+
+- Python 3
+- OpenCV library (`cv2`)
+- Haar Cascade XML files for face and eye detection
